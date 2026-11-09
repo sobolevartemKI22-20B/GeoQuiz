@@ -86,6 +86,113 @@ fun GeoQuizScreen() {
     val isLastQuestion =
         currentQuestionIndex == questions.lastIndex
 
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            )
+        }
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+
+            Text(
+                text = "GeoQuiz",
+                fontSize = 28.sp
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Вопрос ${currentQuestionIndex + 1} из ${questions.size}",
+                fontSize = 16.sp
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = currentQuestion.text,
+                fontSize = 22.sp
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Кнопки ответов скрываются после ответа
+            if (!answered) {
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+
+                    Button(
+                        onClick = {
+                            if (currentQuestion.correctAnswer) {
+                                correctCount++
+                            }
+
+                            answered = true
+
+                            if (isLastQuestion) {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        "Тест завершён! Правильных ответов: " +
+                                                "$correctCount из ${questions.size}"
+                                    )
+                                }
+                            }
+                        }
+                    ) {
+                        Text("True")
+                    }
+
+                    Button(
+                        onClick = {
+                            if (!currentQuestion.correctAnswer) {
+                                correctCount++
+                            }
+
+                            answered = true
+
+                            if (isLastQuestion) {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        "Тест завершён! Правильных ответов: " +
+                                                "$correctCount из ${questions.size}"
+                                    )
+                                }
+                            }
+                        }
+                    ) {
+                        Text("False")
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            if (!(isLastQuestion && answered)) {
+
+                Button(
+                    onClick = {
+                        currentQuestionIndex++
+                        answered = false
+                    },
+                    enabled = answered
+                ) {
+                    Text("Next")
+                }
+            }
+        }
+    }
+
 }
 
 @Preview(showSystemUi = true)
