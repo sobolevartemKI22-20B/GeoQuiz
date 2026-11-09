@@ -63,6 +63,29 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GeoQuizScreen() {
 
+    var currentQuestionIndex by remember {
+        mutableIntStateOf(0)
+    }
+
+    var answered by remember {
+        mutableStateOf(false)
+    }
+
+    var correctCount by remember {
+        mutableIntStateOf(0)
+    }
+
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
+
+    val scope = rememberCoroutineScope()
+
+    val currentQuestion = questions[currentQuestionIndex]
+
+    val isLastQuestion =
+        currentQuestionIndex == questions.lastIndex
+
 }
 
 @Preview(showSystemUi = true)
